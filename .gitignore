@@ -1,0 +1,15 @@
+# 虚拟环境
+t3rn-env/
+
+# Python
+__pycache__/
+*.py[cod]
+*.class
+*.so
+.Python
+*.egg-info/
+*.egg
+
+# IDE
+.vscode/
+.idea/
