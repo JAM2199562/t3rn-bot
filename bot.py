@@ -190,11 +190,12 @@ def display_menu():
     print(" ")
     print(f"{chain_symbols['Arbitrum Sepolia']}1. Arbitrum Sepolia <-> Blast Sepolia{reset_color}")
     print(f"{chain_symbols['Blast Sepolia']}2. Blast Sepolia <-> Base Sepolia{reset_color}")
-    print(f"{chain_symbols['Optimism Sepolia']}3. Optimism Sepolia -> Base Sepolia{reset_color}")
-    print(f"{chain_symbols['Optimism Sepolia']}4. Optimism Sepolia -> Blast Sepolia{reset_color}")
+    print(f"{chain_symbols['Optimism Sepolia']}3. Optimism Sepolia -> Blast Sepolia{reset_color}")
+    print(f"{chain_symbols['Blast Sepolia']}4. Blast Sepolia -> Optimism Sepolia{reset_color}")
+    print(f"{chain_symbols['Optimism Sepolia']}5. Optimism Sepolia -> Base Sepolia{reset_color}")
     print(f"{menu_color}按 'q' 退出程序{reset_color}")
     print(" ")
-    choice = input("输入选择 (1-4): ")
+    choice = input("输入选择 (1-5): ")
     return choice
 
 def main(current_network, alternate_network):
@@ -275,10 +276,13 @@ if __name__ == "__main__":
                 alternate_network = 'Base Sepolia'
             elif choice == '3':
                 current_network = 'Optimism Sepolia'
-                alternate_network = 'Base Sepolia'
-            elif choice == '4':
-                current_network = 'Optimism Sepolia'
                 alternate_network = 'Blast Sepolia'
+            elif choice == '4':
+                current_network = 'Blast Sepolia'
+                alternate_network = 'Optimism Sepolia'
+            elif choice == '5':
+                current_network = 'Optimism Sepolia'
+                alternate_network = 'Base Sepolia'
             else:
                 print("无效选择，请重试")
                 continue
