@@ -192,14 +192,15 @@ def process_network_transactions(network_name, bridges, chain_data, successful_t
 def display_menu():
     print(f"{menu_color}选择要运行交易的链:{reset_color}")
     print(" ")
-    print(f"{chain_symbols['Arbitrum Sepolia']}1. Arbitrum Sepolia <-> Blast Sepolia{reset_color}")
-    print(f"{chain_symbols['Blast Sepolia']}2. Blast Sepolia <-> Base Sepolia{reset_color}")
-    print(f"{chain_symbols['Optimism Sepolia']}3. Optimism Sepolia -> Blast Sepolia{reset_color}")
-    print(f"{chain_symbols['Blast Sepolia']}4. Blast Sepolia -> Optimism Sepolia{reset_color}")
-    print(f"{chain_symbols['Optimism Sepolia']}5. Optimism Sepolia -> Base Sepolia{reset_color}")
+    print(f"{chain_symbols['Arbitrum Sepolia']}1. Arbitrum <-> Blast{reset_color}")
+    print(f"{chain_symbols['Blast Sepolia']}2. Blast <-> Base{reset_color}")
+    print(f"{chain_symbols['Blast Sepolia']}3. Blast -> Optimism{reset_color}")
+    print(f"{chain_symbols['Optimism Sepolia']}4. Optimism -> Blast{reset_color}")
+    print(f"{chain_symbols['Optimism Sepolia']}5. Optimism -> Base{reset_color}")
+    print(f"{menu_color}6. 查询所有链余额{reset_color}")
     print(f"{menu_color}按 'q' 退出程序{reset_color}")
     print(" ")
-    choice = input("输入选择 (1-5): ")
+    choice = input("输入选择 (1-6): ")
     return choice
 
 def main(current_network, alternate_network):
@@ -274,6 +275,65 @@ def main(current_network, alternate_network):
             time.sleep(0.1)
             continue
 
+def check_all_balances():
+    clear_terminal()
+    print(f"{menu_color}=== 查询所有链上余额 ==={reset_color}\n")
+    
+    # 创建BRN的Web3实例
+    brn_web3 = Web3(Web3.HTTPProvider('https://brn.rpc.caldera.xyz/http'))
+    
+    # 简化网络名称
+    network_display_names = {
+        'Arbitrum Sepolia': 'Arbitrum',
+        'Blast Sepolia': 'Blast',
+        'Optimism Sepolia': 'Optimism',
+        'Base Sepolia': 'Base'
+    }
+    
+    for i, private_key in enumerate(private_keys):
+        account = Account.from_key(private_key)
+        address = account.address
+        print(f"\n{menu_color}=== 地址 {labels[i]} ==={reset_color}")
+        print(f"钱包地址: {address}")
+        
+        # 查询BRN余额
+        brn_balance = get_brn_balance(brn_web3, address)
+        print(f"BRN\t\t{brn_balance:.2f} BRN")
+        
+        # 查询各链ETH余额
+        for network_name, network_data in networks.items():
+            try:
+                web3 = Web3(Web3.HTTPProvider(network_data['rpc_url']))
+                display_name = network_display_names[network_name]
+                if web3.is_connected():
+                    balance = check_balance(web3, address)
+                    print(f"{chain_symbols[network_name]}{display_name:<12}{balance:.6f} ETH{reset_color}")
+                else:
+                    print(f"{chain_symbols[network_name]}{display_name:<12}连接失败{reset_color}")
+            except Exception as e:
+                print(f"{chain_symbols[network_name]}{display_name:<12}查询出错{reset_color}")
+        
+        print(f"{menu_color}{'='*50}{reset_color}")
+    
+    print("\n按任意键返回主菜单...")
+    
+    # 跨平台按键检测
+    try:
+        import msvcrt  # Windows
+        msvcrt.getch()
+    except ImportError:
+        try:
+            import tty, termios  # Unix
+            fd = sys.stdin.fileno()
+            old_settings = termios.tcgetattr(fd)
+            try:
+                tty.setraw(sys.stdin.fileno())
+                sys.stdin.read(1)
+            finally:
+                termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+        except:
+            input()  # 如果上述方法都失败，回退到input()
+
 if __name__ == "__main__":
     while True:  # 最外层的程序重启循环
         try:
@@ -290,14 +350,17 @@ if __name__ == "__main__":
                 current_network = 'Blast Sepolia'
                 alternate_network = 'Base Sepolia'
             elif choice == '3':
-                current_network = 'Optimism Sepolia'
-                alternate_network = 'Blast Sepolia'
-            elif choice == '4':
                 current_network = 'Blast Sepolia'
                 alternate_network = 'Optimism Sepolia'
+            elif choice == '4':
+                current_network = 'Optimism Sepolia'
+                alternate_network = 'Blast Sepolia'
             elif choice == '5':
                 current_network = 'Optimism Sepolia'
                 alternate_network = 'Base Sepolia'
+            elif choice == '6':
+                check_all_balances()
+                continue
             else:
                 print("无效选择，请重试")
                 continue
