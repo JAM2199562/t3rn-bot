@@ -136,8 +136,8 @@ def send_bridge_transaction(web3, account, my_address, data, network_name):
     except Exception as e:
         error_msg = str(e)
         if "insufficient funds" in error_msg.lower():
-            print(f"账户余额不足,等待3分钟后继续...")
-            time.sleep(180)  # 等待3分钟
+            print(f"账户余额不足,等待30秒后继续...")
+            time.sleep(30)  # 等待30秒
             return None, None
         else:
             print(f"交易失败: {e}")
