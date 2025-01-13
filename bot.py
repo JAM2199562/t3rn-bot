@@ -170,10 +170,12 @@ def process_network_transactions(network_name, bridges, chain_data, successful_t
 
                     print(f"{'='*150}\n")
                 else:
+                    time.sleep(1)  # 添加1秒延迟
                     print(f"地址 {my_address} 交易失败,尝试下一个地址")
                     continue
 
             except Exception as e:
+                time.sleep(1)  # 这里也添加1秒延迟
                 print(f"处理地址 {my_address} 时发生错误: {e}")
                 continue
             
