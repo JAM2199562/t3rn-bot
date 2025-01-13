@@ -136,9 +136,8 @@ def send_bridge_transaction(web3, account, my_address, data, network_name):
     except Exception as e:
         error_msg = str(e)
         if "insufficient funds" in error_msg.lower():
-            print(f"账户余额不足,等待30秒后继续...")
-            time.sleep(30)  # 等待30秒
-            return None, None
+            print(f"{chain_symbols[network_name]}{network_name} 账户余额不足{reset_color}")
+            return "insufficient_funds", None
         else:
             print(f"交易失败: {e}")
             return None, None
@@ -165,7 +164,9 @@ def process_network_transactions(network_name, bridges, chain_data, successful_t
                     continue
 
                 result = send_bridge_transaction(web3, account, my_address, data, network_name)
-                if result[0]:  # 如果交易成功
+                if result[0] == "insufficient_funds":  # 处理余额不足的情况
+                    return "insufficient_funds"
+                elif result[0]:  # 如果交易成功
                     tx_hash, value_sent = result
                     successful_txs += 1
                     
@@ -176,19 +177,14 @@ def process_network_transactions(network_name, bridges, chain_data, successful_t
 
                     print(f"{'='*150}\n")
                 else:
-                    time.sleep(1)  # 添加1秒延迟
+                    time.sleep(1)
                     print(f"地址 {my_address} 交易失败,尝试下一个地址")
                     continue
 
             except Exception as e:
-                time.sleep(1)  # 这里也添加1秒延迟
+                time.sleep(1)
                 print(f"处理地址 {my_address} 时发生错误: {e}")
                 continue
-            
-            # 移除地址间的等待
-            # wait_time = random.uniform(1, 2)
-            # print(f"⏳ 等待 {wait_time:.2f} 秒后继续...")
-            # time.sleep(wait_time)
 
     return successful_txs
 
@@ -213,6 +209,7 @@ def main(current_network, alternate_network):
             print("\n\n")
 
             successful_txs = 0
+            insufficient_funds_count = 0  # 记录余额不足的链数
 
             while True:  # 内层业务循环
                 try:
@@ -242,21 +239,31 @@ def main(current_network, alternate_network):
 
                     # 处理当前链的交易
                     bridge_key = f"{current_network} - {alternate_network}"
-                    successful_txs = process_network_transactions(
+                    result = process_network_transactions(
                         current_network, 
                         [bridge_key],
                         networks[current_network], 
                         successful_txs
                     )
-
-                    # 移除网络切换等待
-                    # wait_time = random.uniform(0, 1.5)
-                    # print(f"⏳ 切换网络前等待 {wait_time:.2f} 秒...")
-                    # time.sleep(wait_time)
+                    
+                    # 如果返回的是元组,说明是正常的交易结果
+                    if isinstance(result, tuple):
+                        successful_txs = result[0]
+                        insufficient_funds_count = 0  # 重置计数器
+                    # 如果返回的是字符串"insufficient_funds",说明当前链余额不足
+                    elif result == "insufficient_funds":
+                        insufficient_funds_count += 1
+                        if insufficient_funds_count >= 2:  # 两条链都没钱了
+                            print("两条链都余额不足,等待30秒后重试...")
+                            time.sleep(30)
+                            insufficient_funds_count = 0  # 重置计数器
+                        
+                    # 切换到另一条链
+                    current_network, alternate_network = alternate_network, current_network
 
                 except Exception as e:
                     print(f"内层循环发生错误: {str(e)}")
-                    time.sleep(0.1)  # 仅等待0.1秒
+                    time.sleep(0.1)
                     continue
 
         except KeyboardInterrupt:
@@ -264,7 +271,7 @@ def main(current_network, alternate_network):
             sys.exit(0)
         except Exception as e:
             print(f"外层循环发生错误: {str(e)}")
-            time.sleep(0.1)  # 仅等待0.1秒
+            time.sleep(0.1)
             continue
 
 if __name__ == "__main__":
