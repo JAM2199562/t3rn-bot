@@ -188,13 +188,13 @@ def process_network_transactions(network_name, bridges, chain_data, successful_t
 def display_menu():
     print(f"{menu_color}选择要运行交易的链:{reset_color}")
     print(" ")
-    print(f"{chain_symbols['Arbitrum Sepolia']}1. Arbitrum Sepolia -> Blast Sepolia{reset_color}")
-    print(f"{chain_symbols['Blast Sepolia']}2. Blast Sepolia -> Arbitrum Sepolia{reset_color}")
+    print(f"{chain_symbols['Arbitrum Sepolia']}1. Arbitrum Sepolia <-> Blast Sepolia{reset_color}")
+    print(f"{chain_symbols['Blast Sepolia']}2. Blast Sepolia <-> Base Sepolia{reset_color}")
     print(f"{chain_symbols['Optimism Sepolia']}3. Optimism Sepolia -> Base Sepolia{reset_color}")
-    print(f"{chain_symbols['Base Sepolia']}4. Base Sepolia -> Optimism Sepolia{reset_color}")
-    print(f"{menu_color}5. 运行所有链{reset_color}")
+    print(f"{chain_symbols['Optimism Sepolia']}4. Optimism Sepolia -> Blast Sepolia{reset_color}")
+    print(f"{menu_color}按 'q' 退出程序{reset_color}")
     print(" ")
-    choice = input("输入选择 (1-5): ")
+    choice = input("输入选择 (1-4): ")
     return choice
 
 def main(current_network, alternate_network):
@@ -263,21 +263,22 @@ if __name__ == "__main__":
         try:
             choice = display_menu()
             
+            if choice.lower() == 'q':
+                print("退出程序...")
+                sys.exit(0)
+                
             if choice == '1':
                 current_network = 'Arbitrum Sepolia'
                 alternate_network = 'Blast Sepolia'
             elif choice == '2':
                 current_network = 'Blast Sepolia'
-                alternate_network = 'Arbitrum Sepolia'
+                alternate_network = 'Base Sepolia'
             elif choice == '3':
                 current_network = 'Optimism Sepolia'
                 alternate_network = 'Base Sepolia'
             elif choice == '4':
-                current_network = 'Base Sepolia'
-                alternate_network = 'Optimism Sepolia'
-            elif choice == '5':
-                print("暂不支持运行所有链")
-                continue
+                current_network = 'Optimism Sepolia'
+                alternate_network = 'Blast Sepolia'
             else:
                 print("无效选择，请重试")
                 continue
