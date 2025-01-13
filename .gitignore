@@ -13,3 +13,4 @@ __pycache__/
 # IDE
 .vscode/
 .idea/
+keys_and_addresses.py
