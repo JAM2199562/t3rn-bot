@@ -134,8 +134,14 @@ def send_bridge_transaction(web3, account, my_address, data, network_name):
         return web3.to_hex(tx_hash), value_in_ether
 
     except Exception as e:
-        print(f"交易失败: {e}")
-        return None, None
+        error_msg = str(e)
+        if "insufficient funds" in error_msg.lower():
+            print(f"账户余额不足,等待3分钟后继续...")
+            time.sleep(180)  # 等待3分钟
+            return None, None
+        else:
+            print(f"交易失败: {e}")
+            return None, None
 
 # 在特定网络上处理交易的函数
 def process_network_transactions(network_name, bridges, chain_data, successful_txs):
