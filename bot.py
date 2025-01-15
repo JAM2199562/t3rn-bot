@@ -88,7 +88,7 @@ def send_bridge_transaction(web3, account, my_address, data, network_name):
         customized_data = customize_bridge_data(data, my_address)
         
         nonce = web3.eth.get_transaction_count(my_address, 'pending')
-        value_in_ether = 0.1
+        value_in_ether = 0.2
         value_in_wei = web3.to_wei(value_in_ether, 'ether')
 
         gas_estimate = web3.eth.estimate_gas({
@@ -233,9 +233,9 @@ def main(current_network, alternate_network):
                     my_address = Account.from_key(private_keys[0]).address
                     balance = check_balance(web3, my_address)
 
-                    # 如果余额不足 0.11 ETH，切换到另一个链
-                    if balance < 0.11:
-                        print(f"{chain_symbols[current_network]}{current_network}余额不足 0.11 ETH，切换到 {alternate_network}{reset_color}")
+                    # 如果余额不足 0.21 ETH，切换到另一个链
+                    if balance < 0.21:
+                        print(f"{chain_symbols[current_network]}{current_network}余额不足 0.21 ETH，切换到 {alternate_network}{reset_color}")
                         current_network, alternate_network = alternate_network, current_network
 
                     # 处理当前链的交易
