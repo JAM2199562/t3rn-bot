@@ -192,15 +192,14 @@ def process_network_transactions(network_name, bridges, chain_data, successful_t
 def display_menu():
     print(f"{menu_color}选择要运行交易的链:{reset_color}")
     print(" ")
-    print(f"{chain_symbols['Arbitrum Sepolia']}1. Arbitrum <-> Blast{reset_color}")
-    print(f"{chain_symbols['Blast Sepolia']}2. Blast <-> Base{reset_color}")
-    print(f"{chain_symbols['Blast Sepolia']}3. Blast -> Optimism{reset_color}")
-    print(f"{chain_symbols['Optimism Sepolia']}4. Optimism -> Blast{reset_color}")
-    print(f"{chain_symbols['Optimism Sepolia']}5. Optimism -> Base{reset_color}")
-    print(f"{menu_color}6. 查询所有链余额{reset_color}")
+    print(f"{chain_symbols['Arbitrum Sepolia']}1. Arbitrum Sepolia <-> Blast Sepolia{reset_color}")
+    print(f"{chain_symbols['Blast Sepolia']}2. Blast Sepolia <-> Base Sepolia{reset_color}")
+    print(f"{chain_symbols['Optimism Sepolia']}3. Optimism Sepolia -> Blast Sepolia{reset_color}")
+    print(f"{chain_symbols['Blast Sepolia']}4. Blast Sepolia -> Optimism Sepolia{reset_color}")
+    print(f"{chain_symbols['Optimism Sepolia']}5. Optimism Sepolia <-> Base Sepolia{reset_color}")
     print(f"{menu_color}按 'q' 退出程序{reset_color}")
     print(" ")
-    choice = input("输入选择 (1-6): ")
+    choice = input("输入选择 (1-5): ")
     return choice
 
 def main(current_network, alternate_network):
@@ -353,14 +352,11 @@ if __name__ == "__main__":
                 current_network = 'Blast Sepolia'
                 alternate_network = 'Optimism Sepolia'
             elif choice == '4':
-                current_network = 'Optimism Sepolia'
-                alternate_network = 'Blast Sepolia'
+                current_network = 'Blast Sepolia'
+                alternate_network = 'Optimism Sepolia'
             elif choice == '5':
                 current_network = 'Optimism Sepolia'
                 alternate_network = 'Base Sepolia'
-            elif choice == '6':
-                check_all_balances()
-                continue
             else:
                 print("无效选择，请重试")
                 continue
