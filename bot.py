@@ -197,9 +197,10 @@ def display_menu():
     print(f"{chain_symbols['Optimism Sepolia']}3. Optimism Sepolia -> Blast Sepolia{reset_color}")
     print(f"{chain_symbols['Blast Sepolia']}4. Blast Sepolia -> Optimism Sepolia{reset_color}")
     print(f"{chain_symbols['Optimism Sepolia']}5. Optimism Sepolia <-> Base Sepolia{reset_color}")
+    print(f"{menu_color}6. 查询所有链余额{reset_color}")
     print(f"{menu_color}按 'q' 退出程序{reset_color}")
     print(" ")
-    choice = input("输入选择 (1-5): ")
+    choice = input("输入选择 (1-6): ")
     return choice
 
 def main(current_network, alternate_network):
@@ -357,6 +358,9 @@ if __name__ == "__main__":
             elif choice == '5':
                 current_network = 'Optimism Sepolia'
                 alternate_network = 'Base Sepolia'
+            elif choice == '6':
+                check_all_balances()
+                continue
             else:
                 print("无效选择，请重试")
                 continue
